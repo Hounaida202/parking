@@ -61,13 +61,7 @@ class ReservationController extends Controller
         ], 404);
     }
 
-    // Vérifier si l'utilisateur connecté est bien celui qui a créé la réservation
-    if ($reservation->users_id !== Auth::id()) {
-        return response()->json([
-            'message' => 'Action non autorisée'
-        ], 403);
-    }
-
+   
     // Mise à jour des champs
     $reservation->update([
         'date' => $request->date ?? $reservation->date,
@@ -81,8 +75,38 @@ class ReservationController extends Controller
         'reservation' => $reservation
     ], 200);
 }
+        public function supprimerReservation($id)
+        {
+            // Récupérer la réservation
+            $reservation = Reservation::find($id);
 
-    
+            // Vérifier si la réservation existe
+            if (!$reservation) {
+                return response()->json([
+                    'message' => 'Réservation non trouvée'
+                ], 404);
+            }
+
+          
+            // Supprimer la réservation
+            $reservation->delete();
+
+            return response()->json([
+                'message' => 'Réservation supprimée avec succès'
+            ], 200);
+        }
+
+        public function mesReservations()
+        {
+            $userId = Auth::id();
+     
+            $reservations = Reservation::where('users_id', $userId)->get();
+        
+            return response()->json([
+                'reservations' => $reservations
+            ], 200);
+        }
+        
 
 
 
