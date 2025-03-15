@@ -49,6 +49,39 @@ class ReservationController extends Controller
             'reservation' => $reservation
         ], 201);
     }
+
+    public function modifierReservation(Request $request, $id)
+{
+    // Vérifier si la réservation existe
+    $reservation = Reservation::find($id);
+
+    if (!$reservation) {
+        return response()->json([
+            'message' => 'Réservation non trouvée'
+        ], 404);
+    }
+
+    // Vérifier si l'utilisateur connecté est bien celui qui a créé la réservation
+    if ($reservation->users_id !== Auth::id()) {
+        return response()->json([
+            'message' => 'Action non autorisée'
+        ], 403);
+    }
+
+    // Mise à jour des champs
+    $reservation->update([
+        'date' => $request->date ?? $reservation->date,
+        'de' => $request->de ?? $reservation->de,
+        'a' => $request->a ?? $reservation->a,
+        'places_id' => $request->places_id ?? $reservation->places_id,
+    ]);
+
+    return response()->json([
+        'message' => 'Réservation mise à jour avec succès',
+        'reservation' => $reservation
+    ], 200);
+}
+
     
 
 

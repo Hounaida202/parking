@@ -23,8 +23,7 @@ class ParkingController extends Controller
 {
     if ($request->isMethod('POST')) {
         $adresse = $request->input('search');
-        $parkings = Parking::where('adresse', 'LIKE', "%{$adresse}%")->get(); 
-        
+        $parkings = Parking::where('adresse', 'LIKE', "%{$adresse}%")->get();      
         return response()->json([
             'parkings' => $parkings, 
         ], 200); 
